@@ -14,13 +14,38 @@ import {
   Bell,
   Settings,
   HelpCircle,
-  Plus
+  Plus,
+  CreditCard,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 import Header from './Header';
 import './Dashboard.css';
 
 const Dashboard = ({ user, onLogout, darkMode, toggleDarkMode }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [managementFeeStatus, setManagementFeeStatus] = useState(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState('');
+
+  useEffect(() => {
+    // Fetch management fee status
+    const fetchManagementFeeStatus = async () => {
+      try {
+        const response = await fetch(`/api/management-fee-status/${user.mobile}`);
+        if (response.ok) {
+          const result = await response.json();
+          setManagementFeeStatus(result.managementFee);
+        }
+      } catch (error) {
+        console.error('Error fetching management fee status:', error);
+      }
+    };
+
+    if (user && user.mobile) {
+      fetchManagementFeeStatus();
+    }
+  }, [user]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -54,6 +79,63 @@ const Dashboard = ({ user, onLogout, darkMode, toggleDarkMode }) => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handlePaymentClick = async () => {
+    setIsProcessingPayment(true);
+    setPaymentMessage('');
+
+    try {
+      const response = await fetch('/api/payment/management-fee', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mobile: user.mobile,
+          paymentMethod: 'online'
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setPaymentMessage('Payment successful! You are now a full member.');
+        setManagementFeeStatus({
+          paid: true,
+          paymentDate: result.data.paymentDate,
+          nextDue: result.data.nextDue,
+          amount: result.data.amount,
+          isExpired: false
+        });
+      } else {
+        setPaymentMessage(result.message || 'Payment failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setPaymentMessage('Network error. Please try again.');
+    }
+
+    setIsProcessingPayment(false);
+  };
+
+  const getPaymentStatusDisplay = () => {
+    if (!managementFeeStatus) return null;
+
+    if (managementFeeStatus.paid && !managementFeeStatus.isExpired) {
+      const nextDue = new Date(managementFeeStatus.nextDue);
+      return (
+        <p style={{ color: 'var(--success-color)', fontSize: '0.9rem' }}>
+          ✓ Full Member - Next payment due: {nextDue.toLocaleDateString()}
+        </p>
+      );
+    }
+
+    return (
+      <p style={{ color: 'var(--warning-color)', fontSize: '0.9rem' }}>
+        ⚠ Limited Access - Pay ₹499 to become a full member
+      </p>
+    );
   };
 
   const quickStats = [

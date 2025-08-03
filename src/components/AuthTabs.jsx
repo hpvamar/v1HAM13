@@ -106,10 +106,12 @@ const AuthTabs = ({ isPopup = false, onClose = null, onLogin = null }) => {
           onLogin(result.user, result.token);
         }
         
-        // Always close popup after successful login
-        if (onClose) {
-          onClose();
-        }
+        // Close popup after a short delay to show success
+        setTimeout(() => {
+          if (onClose) {
+            onClose();
+          }
+        }, 500);
       } else {
         console.error('Login failed:', result);
         setErrors({ general: result.message || 'Login failed. Please try again.' });
@@ -413,6 +415,16 @@ const AuthTabs = ({ isPopup = false, onClose = null, onLogin = null }) => {
     handleSubmit
   ]);
 
+  const handleRegistrationSuccess = (userData, token) => {
+    setShowRegistrationPopup(false);
+    if (onLogin) {
+      onLogin(userData, token);
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
+
   if (isPopup) {
     return (
       <>
@@ -572,6 +584,7 @@ const AuthTabs = ({ isPopup = false, onClose = null, onLogin = null }) => {
         <RegistrationPopup 
           isOpen={showRegistrationPopup} 
           onClose={() => setShowRegistrationPopup(false)} 
+          onRegistrationSuccess={handleRegistrationSuccess}
         />
       </>
     );
@@ -737,6 +750,7 @@ const AuthTabs = ({ isPopup = false, onClose = null, onLogin = null }) => {
       <RegistrationPopup 
         isOpen={showRegistrationPopup} 
         onClose={() => setShowRegistrationPopup(false)} 
+        onRegistrationSuccess={handleRegistrationSuccess}
       />
     </>
   );

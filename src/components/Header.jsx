@@ -289,6 +289,12 @@ const Header = ({ darkMode, toggleDarkMode, onLogin, user = null, onLogout = nul
               <AuthTabs isPopup={true} onClose={closeLoginPopup} onLogin={onLogin} />
             </div>
           </div>
+          onRegistrationSuccess={(userData, token) => {
+            setShowRegistrationPopup(false);
+            if (onLogin) {
+              onLogin(userData, token);
+            }
+          }}
         </div>
       )}
     </>

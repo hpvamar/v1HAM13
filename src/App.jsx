@@ -118,6 +118,8 @@ function App() {
 
   const handleLogin = (userData, token) => {
     setUser(userData);
+    // Store token for authentication
+    localStorage.setItem('authToken', token);
     const dashboardPath = '/v1/ham/userDashboard';
     navigateTo(dashboardPath);
   };
@@ -130,11 +132,11 @@ function App() {
 
   // Determine what to render based on current route and user state
   const shouldShowDashboard = () => {
-    return currentRoute === '/v1/ham/userDashboard' && user;
+    return user && (currentRoute === '/v1/ham/userDashboard' || currentRoute === '/dashboard');
   };
 
   const shouldShowHomePage = () => {
-    return !shouldShowDashboard();
+    return !user || (!shouldShowDashboard() && currentRoute === '/');
   };
 
   if (isLoading) {

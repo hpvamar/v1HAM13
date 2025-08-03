@@ -1340,25 +1340,26 @@ const RegistrationProvider = ({ children }) => {
         if (result.token) {
           localStorage.setItem('authToken', result.token);
           
-          // If onLogin callback is provided, call it
-          if (window.onRegistrationSuccess) {
-            window.onRegistrationSuccess(result.user, result.token);
+          // Close the registration popup and redirect to dashboard
+          setTimeout(() => {
+            // Trigger login callback to redirect to dashboard
+            if (window.parent && window.parent.handleRegistrationSuccess) {
+              window.parent.handleRegistrationSuccess(result.user, result.token);
+            }
+            // Close popup
+            if (window.closeRegistrationPopup) {
+              window.closeRegistrationPopup();
+            }
+          }, 1500);
+        } else {
+          // If no token, just close popup after delay
+          setTimeout(() => {
+            if (window.closeRegistrationPopup) {
+              window.closeRegistrationPopup();
+            }
+          }, 2000);
           }
         }
-        
-        // Reset form after successful registration
-        setTimeout(() => {
-          setCurrentStep(1);
-          setFormData({
-            mobile: '', otp: '', name: '', email: '', password: '', gender: '', dob: '',
-            homePhone: '', bloodGroup: '', aadhar: '', pan: '', department: '', otherDepartment: '',
-            departmentId: '', jobDescription: '', block: '', post: '', subPost: '', jobAddress: '',
-            pinCode: '', district: '', firstNominee: { name: '', relation: '', mobile: '', accountHolderName: '',
-            bankName: '', accountNo: '', ifsc: '', branch: '' }, secondNominee: { name: '', relation: '',
-            mobile: '', accountHolderName: '', bankName: '', accountNo: '', ifsc: '', branch: '' },
-            homeAddress: '', homeDistrict: '', homePinCode: '', disease: '', causeOfIllness: ''
-          });
-        }, 2000);
       } else {
         showToast(result.message || 'Registration failed', 'error');
       }
@@ -1403,8 +1404,19 @@ const RegistrationProvider = ({ children }) => {
 };
 
 // Main Registration Popup Component
-const RegistrationPopup = ({ isOpen, onClose }) => {
+const RegistrationPopup = ({ isOpen, onClose, onRegistrationSuccess }) => {
   if (!isOpen) return null;
+
+  // Set up global callback for registration success
+  React.useEffect(() => {
+    window.closeRegistrationPopup = onClose;
+    window.handleRegistrationSuccess = onRegistrationSuccess;
+    
+    return () => {
+      delete window.closeRegistrationPopup;
+      delete window.handleRegistrationSuccess;
+    };
+  }, [onClose, onRegistrationSuccess]);
 
   const steps = ['Verification', 'Basic Details', 'Job Details', 'Nominees', 'Other Details'];
 
