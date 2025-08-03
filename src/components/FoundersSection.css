@@ -1,0 +1,461 @@
+.founders-section {
+  padding: 2rem 0;
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.founders-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.section-header h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.founders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.founder-card {
+  height: 450px;
+  perspective: 1000px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  background: var(--bg-color);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Hover effects only when not flipped */
+.founder-card:hover:not(.flipped) .card-front {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+}
+
+/* Hover effects for flipped cards */
+.founder-card.flipped:hover .card-back {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) rotateY(180deg);
+}
+
+/* Add flipped class to founder-card when card is flipped */
+.founder-card:has(.card-inner.flipped) {
+  /* This selector might not work in all browsers, so we'll use JavaScript approach */
+}
+
+.card-front {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9), 
+    rgba(248, 250, 252, 0.9));
+}
+
+.dark .card-front {
+  background: linear-gradient(135deg, 
+    rgba(31, 41, 55, 0.9), 
+    rgba(17, 24, 39, 0.9));
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.05) 0%, 
+    rgba(139, 92, 246, 0.05) 100%);
+}
+
+.founder-image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.founder-card:hover:not(.flipped) .founder-image-container {
+  transform: scale(1.05);
+}
+
+.founder-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.founder-card:hover:not(.flipped) .founder-image {
+  border-color: var(--secondary-color);
+  box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(59, 130, 246, 0.9), 
+    rgba(139, 92, 246, 0.9));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: scale(0.8);
+}
+
+.founder-card:hover:not(.flipped) .image-overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.quote-icon {
+  color: white;
+}
+
+.founder-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.founder-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.founder-card:hover:not(.flipped) .founder-name {
+  color: var(--primary-color);
+}
+
+.founder-designation {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+
+.founder-department {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.founder-quote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-color);
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.founder-card:hover:not(.flipped) .founder-quote {
+  background: rgba(139, 92, 246, 0.1);
+  border-left-color: var(--secondary-color);
+  transform: translateX(5px);
+}
+
+.quote-mark {
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.founder-quote span {
+  font-style: italic;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.click-hint {
+  margin-top: auto;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.founder-card:hover .click-hint {
+  background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+}
+
+.founder-message {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.message-quote {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.founder-message p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.social-link {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.social-link:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.founders-cta {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.cta-content {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.cta-content h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.cta-content p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.cta-content .btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  backdrop-filter: blur(10px);
+}
+
+.cta-content .btn:hover {
+  background: white;
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .founders-section {
+    padding: 1.5rem 0;
+  }
+  
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .founders-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 0.75rem;
+  }
+  
+  .founder-card {
+    height: 400px;
+  }
+  
+  .card-front,
+  .card-back {
+    padding: 1.5rem;
+  }
+  
+  .founder-name {
+    font-size: 1.3rem;
+  }
+  
+  .founder-designation {
+    font-size: 0.9rem;
+  }
+  
+  .founder-department {
+    font-size: 0.8rem;
+  }
+  
+  .founder-message p {
+    font-size: 1rem;
+  }
+  
+  .cta-content {
+    padding: 2rem;
+  }
+  
+  .cta-content h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .founders-section {
+    padding: 1rem 0;
+  }
+  
+  .section-header h2 {
+    font-size: 1.6rem;
+  }
+  
+  .founders-grid {
+    grid-template-columns: 1fr;
+    padding: 0 0.5rem;
+  }
+  
+  .founder-card {
+    height: 350px;
+  }
+  
+  .founder-image-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .card-front,
+  .card-back {
+    padding: 1rem;
+  }
+  
+  .founder-name {
+    font-size: 1.2rem;
+  }
+  
+  .social-links {
+    gap: 0.5rem;
+  }
+  
+  .social-link {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .cta-content {
+    padding: 1.5rem;
+  }
+  
+  .cta-content h3 {
+    font-size: 1.3rem;
+  }
+  
+  .cta-content p {
+    font-size: 0.9rem;
+  }
+}
